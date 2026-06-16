@@ -1,8 +1,8 @@
 # Portfolio Hub
 
-A small React/Vite landing page for Zack's privacy-first Instagram tools.
+A small React/Vite portfolio hub for Zackarin Necesito's projects and professional work.
 
-The hub lives in `hub/` because this is the intended project folder for the parent portfolio. The earlier `site/` name is also reasonable for an apex domain, but `hub/` matches the current workspace and project purpose.
+The hub lives in `hub/` because this is the intended project folder for the parent portfolio and the current project workspace.
 
 ## Stack
 
@@ -39,14 +39,14 @@ npm run preview
 
 ## App Registry
 
-App cards are driven by `src/data/apps.js`. Replace the placeholder Vercel URLs after deploying the sibling apps:
+Project cards are driven by `src/data/apps.js`. Public production URLs live in that registry:
 
 ```js
-url: "https://REPLACE-IG-WRAPPED.vercel.app"
-url: "https://REPLACE-UNRECIPROCATED.vercel.app"
+url: "https://ig-wrapped-theta.vercel.app"
+url: "https://unreciprocated.vercel.app"
 ```
 
-Adding another app should only require adding another object to the `APPS` array.
+Adding another project should only require adding another object to the `APPS` array.
 
 ## Deploying on Vercel
 
