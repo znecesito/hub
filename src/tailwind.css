@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+
+  --color-brand: #e11d48;
+  --color-brand-mid: #be123c;
+  --color-ink: #111827;
+  --color-muted: #64748b;
+  --color-soft: #f8fafc;
+  --color-surface: #f3f4f6;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --radius-card: 1.25rem;
+  --radius-pill: 9999px;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply m-0 bg-surface font-sans text-ink antialiased;
+  }
+
+  a {
+    @apply text-inherit;
+  }
+
+  a:focus-visible {
+    @apply outline-2 outline-offset-4 outline-brand;
+  }
+}
+
+@layer components {
+  .home-page {
+    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,rgb(255_241_242/0.85),transparent_32rem),linear-gradient(135deg,#f8fafc,#f3f4f6_48%,#f8fafc)];
+  }
+
+  .home-page__shell {
+    @apply mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-5 sm:px-6 sm:py-8 lg:px-8;
+  }
+
+  .site-hero {
+    @apply rounded-[1.75rem] border border-white/80 bg-white/70 px-5 py-8 shadow-[0_24px_80px_-48px_rgb(15_23_42/0.45)] backdrop-blur sm:px-8 sm:py-12 lg:px-10 lg:py-14;
+  }
+
+  .site-hero__eyebrow,
+  .apps-section__kicker,
+  .bio-card__kicker {
+    @apply m-0 text-xs font-extrabold uppercase tracking-[0.16em] text-brand;
+  }
+
+  .site-hero__title {
+    @apply m-0 mt-3 max-w-4xl font-display text-[clamp(2.25rem,12vw,5.25rem)] font-bold leading-[0.98] tracking-tight text-ink;
+  }
+
+  .site-hero__lede {
+    @apply m-0 mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg;
+  }
+
+  .site-hero__trust {
+    @apply m-0 mt-6 flex list-none flex-wrap gap-2 p-0;
+  }
+
+  .site-hero__trust li {
+    @apply rounded-pill border border-border bg-surface-elevated px-3 py-1.5 text-xs font-bold text-muted shadow-sm;
+  }
+
+  .apps-section {
+    @apply py-8 sm:py-10;
+  }
+
+  .apps-section__intro {
+    @apply mb-4 flex flex-col gap-1 sm:mb-5;
+  }
+
+  .apps-section__intro h2,
+  .bio-card h2 {
+    @apply m-0 font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl;
+  }
+
+  .apps-grid {
+    @apply grid gap-4 md:grid-cols-2;
+  }
+
+  .app-card {
+    @apply flex min-h-[22rem] flex-col rounded-card border border-border bg-surface-elevated p-5 shadow-[0_16px_48px_-32px_rgb(15_23_42/0.5)] transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_20px_60px_-34px_rgb(15_23_42/0.55)] sm:p-6;
+  }
+
+  .app-card__header {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  .app-card__status {
+    @apply rounded-pill bg-soft px-3 py-1 text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-muted;
+  }
+
+  .app-card__accent {
+    @apply size-3 rounded-full shadow-[0_0_0_6px_rgb(244_63_94/0.1)];
+  }
+
+  .app-card__name {
+    @apply m-0 mt-8 font-display text-3xl font-bold tracking-tight text-ink;
+  }
+
+  .app-card__tagline {
+    @apply m-0 mt-2 text-lg font-bold leading-snug text-ink;
+  }
+
+  .app-card__description {
+    @apply m-0 mt-3 text-sm leading-relaxed text-muted sm:text-base;
+  }
+
+  .app-card__privacy {
+    @apply mt-5 rounded-xl border border-border bg-soft px-3.5 py-3 text-sm font-semibold leading-snug text-muted;
+  }
+
+  .app-card__link {
+    @apply mt-auto inline-flex w-full items-center justify-center rounded-pill bg-ink px-5 py-3 text-sm font-extrabold text-white no-underline transition duration-200 hover:bg-brand active:scale-[0.99] sm:w-fit;
+  }
+
+  .bio-card {
+    @apply rounded-card border border-border bg-white/75 px-5 py-6 shadow-[0_18px_50px_-38px_rgb(15_23_42/0.45)] sm:px-6 sm:py-7;
+  }
+
+  .bio-card p:last-child {
+    @apply m-0 mt-3 max-w-3xl text-base leading-relaxed text-muted;
+  }
+
+  .site-footer {
+    @apply mt-auto flex flex-col gap-2 py-6 text-sm font-semibold text-muted sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .site-footer p {
+    @apply m-0;
+  }
+
+  .site-footer a {
+    @apply w-fit rounded-pill border border-border bg-white/70 px-3 py-1.5 no-underline transition hover:border-border-strong hover:text-ink;
+  }
+}
