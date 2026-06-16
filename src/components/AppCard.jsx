@@ -27,12 +27,6 @@ export default function AppCard({ app }) {
       <p className="app-card__tagline">{app.tagline}</p>
       <p className="app-card__description">{app.description}</p>
 
-      <ul className="app-card__tech" aria-label={`${app.name} technologies`}>
-        {app.technologies.map((technology) => (
-          <li key={technology}>{technology}</li>
-        ))}
-      </ul>
-
       <div className="app-card__actions">
         <a className="app-card__link app-card__link--primary" href={app.url} target="_blank" rel="noreferrer">
           Open project
