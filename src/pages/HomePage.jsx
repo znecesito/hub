@@ -1,5 +1,6 @@
 import React from "react";
 import AppCard from "../components/AppCard.jsx";
+import GitHubActivity from "../components/GitHubActivity.jsx";
 import ProfessionalSnapshot from "../components/ProfessionalSnapshot.jsx";
 import ProfileHeader from "../components/ProfileHeader.jsx";
 import SiteFooter from "../components/SiteFooter.jsx";
@@ -23,6 +24,8 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        <GitHubActivity />
 
         <ProfessionalSnapshot />
 

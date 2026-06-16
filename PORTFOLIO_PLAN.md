@@ -212,7 +212,7 @@ thumbnail: "/projects/ig-wrapped.webp",
 technologies: ["React", "Vite", "Tailwind", "Client-side parsing"]
 ```
 
-Phase 2:
+Phase 2: implemented
 
 - Add GitHub contributions heatmap using the simple dependency `react-github-calendar`.
 - Username: `znecesito`.

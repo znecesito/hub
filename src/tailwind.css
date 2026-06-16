@@ -215,6 +215,22 @@
     @apply mx-5 mb-5 mt-auto inline-flex w-[calc(100%_-_2.5rem)] items-center justify-center rounded-pill bg-ink px-5 py-3 text-sm font-extrabold text-white no-underline transition duration-200 hover:bg-muted active:scale-[0.99] sm:mx-6 sm:mb-6 sm:w-fit;
   }
 
+  .github-section {
+    @apply border-b border-border py-9 sm:py-12;
+  }
+
+  .github-card {
+    @apply flex min-h-[34rem] flex-col items-center justify-center overflow-x-auto rounded-card border border-border bg-surface-elevated p-5 sm:p-8;
+  }
+
+  .github-card svg {
+    @apply mx-auto max-w-none;
+  }
+
+  .github-card__note {
+    @apply m-0 mt-5 text-center font-mono text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-muted;
+  }
+
   .work-section {
     @apply border-b border-border py-9 sm:py-12;
   }
