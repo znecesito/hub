@@ -1,8 +1,9 @@
 import React from "react";
 import { GitHubCalendar } from "react-github-calendar";
+import "react-activity-calendar/tooltips.css";
 
 const GITHUB_USERNAME = "znecesito";
-const RECENT_DAYS = 30;
+const RECENT_DAYS = 60;
 
 function selectRecentActivity(data) {
   const cutoff = new Date();
@@ -35,9 +36,17 @@ export default function GitHubActivity() {
           theme={{
             light: ["#edeae2", "#c7d2fe", "#818cf8", "#4f46e5", "#111827"]
           }}
+          tooltips={{
+            activity: {
+              text: ({ date, count }) =>
+                count === 1
+                  ? `1 contribution on ${date}`
+                  : `${count} contributions on ${date}`
+            }
+          }}
         />
         <p className="github-card__note">
-          Showing roughly the last 30 days of public contribution activity.
+          Showing roughly the last 60 days of public contribution activity.
         </p>
       </div>
     </section>
