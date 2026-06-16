@@ -220,7 +220,7 @@
   }
 
   .github-card {
-    @apply flex min-h-[34rem] flex-col items-center justify-center overflow-x-auto rounded-card border border-border bg-surface-elevated p-5 sm:p-8;
+    @apply flex flex-col items-center justify-center overflow-x-auto rounded-card border border-border bg-surface-elevated p-5 sm:p-8;
   }
 
   .github-card svg {
