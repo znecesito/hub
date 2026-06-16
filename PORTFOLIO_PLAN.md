@@ -233,7 +233,7 @@ Technical notes:
   - render the current year but visually constrain the section, or
   - defer a more robust build-time GitHub GraphQL implementation to a later phase.
 
-Phase 3:
+Phase 3: implemented
 
 - Add a more polished experience timeline.
 - Add project metadata such as stack, year, and links.

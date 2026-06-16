@@ -1,7 +1,7 @@
 import React from "react";
 import AppCard from "../components/AppCard.jsx";
+import ExperienceTimeline from "../components/ExperienceTimeline.jsx";
 import GitHubActivity from "../components/GitHubActivity.jsx";
-import ProfessionalSnapshot from "../components/ProfessionalSnapshot.jsx";
 import ProfileHeader from "../components/ProfileHeader.jsx";
 import SiteFooter from "../components/SiteFooter.jsx";
 import { APPS } from "../data/apps.js";
@@ -27,7 +27,7 @@ export default function HomePage() {
 
         <GitHubActivity />
 
-        <ProfessionalSnapshot />
+        <ExperienceTimeline />
 
         <section className="bio-card" aria-labelledby="bio-heading">
           <p className="section-heading__kicker">About</p>
