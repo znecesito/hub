@@ -5,6 +5,7 @@ import GitHubActivity from "../components/GitHubActivity.jsx";
 import ProfileHeader from "../components/ProfileHeader.jsx";
 import SiteFooter from "../components/SiteFooter.jsx";
 import { APPS } from "../data/apps.js";
+import { PROFILE } from "../data/profile.js";
 
 export default function HomePage() {
   return (
@@ -29,12 +30,11 @@ export default function HomePage() {
 
         <ExperienceTimeline />
 
-        <section className="bio-card" aria-labelledby="bio-heading">
-          <p className="section-heading__kicker">About</p>
-          <h2 id="bio-heading">I build tools that make systems easier to understand.</h2>
-          <p>
-            SRE building practical software for reliability, automation, and everyday workflows.
+        <section className="bio-card" aria-labelledby="bio-kicker">
+          <p className="section-heading__kicker" id="bio-kicker">
+            About
           </p>
+          <p>{PROFILE.about}</p>
         </section>
 
         <SiteFooter />

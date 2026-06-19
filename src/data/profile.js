@@ -7,10 +7,9 @@ export const PROFILE = {
   image: "/profile/zackarin-necesito.webp",
   pronunciationAudio: "/audio/zackarin-necesito-pronunciation.mp3",
   initials: "ZN",
-  bio: [
-    "I build tools that make systems easier to understand.",
-    "SRE building practical software for reliability, automation, and everyday workflows."
-  ],
+  bio: ["I build tools.", "SRE by day. Builder by night."],
+  about:
+    "By day, I'm a Site Reliability Engineer at JPMorgan Chase, working on production systems where reliability, incident response, and automation actually matter. Outside of that, I build small tools for real problems — often using AI to move faster, but always grounded in the discipline of running systems that people depend on. The goal is simple: build things that are useful, reliable, and worth someone's time.",
   socials: [
     {
       id: "github",
