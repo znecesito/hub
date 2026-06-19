@@ -6,8 +6,10 @@ const LEVEL_MAP = {
   FOURTH_QUARTILE: 4
 };
 
-const PRIMARY_API = "https://github-contributions-api.jogruber.de/v4";
-const FALLBACK_API = "https://github-contributions-api.deno.dev";
+const PRIMARY_API = "https://github-contributions-api.deno.dev";
+const SECONDARY_API = "https://github-contributions.vercel.app/api/v1";
+const LEGACY_API = "https://github-contributions-api.jogruber.de/v4";
+const STATIC_DATA_PATH = "/data/github-contributions.json";
 
 function isActivityList(items) {
   return (
@@ -27,7 +29,24 @@ function transformDenoContributions(weeks) {
   }));
 }
 
-async function fetchWithTimeout(url, timeoutMs = 8000) {
+function transformVercelContributions(contributions) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 365);
+  cutoff.setHours(0, 0, 0, 0);
+
+  return contributions
+    .filter((day) => new Date(`${day.date}T00:00:00`) >= cutoff)
+    .map((day) => {
+      const level = Number.parseInt(day.intensity, 10) || 0;
+      return {
+        date: day.date,
+        count: day.count > 0 ? day.count : level > 0 ? 1 : 0,
+        level
+      };
+    });
+}
+
+async function fetchWithTimeout(url, timeoutMs = 5000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -38,28 +57,80 @@ async function fetchWithTimeout(url, timeoutMs = 8000) {
   }
 }
 
-export async function fetchGitHubContributions(username) {
-  try {
-    const response = await fetchWithTimeout(`${PRIMARY_API}/${username}?y=last`);
-    if (response.ok) {
-      const data = await response.json();
-      if (isActivityList(data.contributions)) {
-        return data.contributions;
-      }
-    }
-  } catch {
-    // Primary API is often slow or unavailable; fall back below.
-  }
-
-  const response = await fetch(`${FALLBACK_API}/${username}.json`);
+async function fetchFromDeno(username) {
+  const response = await fetchWithTimeout(`${PRIMARY_API}/${username}.json`);
   if (!response.ok) {
-    throw new Error(`Fetching GitHub contribution data for "${username}" failed.`);
+    return null;
   }
 
   const data = await response.json();
   if (!Array.isArray(data.contributions)) {
-    throw new Error(`Fetching GitHub contribution data for "${username}" failed.`);
+    return null;
   }
 
   return transformDenoContributions(data.contributions);
+}
+
+async function fetchFromVercel(username) {
+  const response = await fetchWithTimeout(`${SECONDARY_API}/${username}`);
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  if (!Array.isArray(data.contributions)) {
+    return null;
+  }
+
+  return transformVercelContributions(data.contributions);
+}
+
+async function fetchFromLegacy(username) {
+  const response = await fetchWithTimeout(`${LEGACY_API}/${username}?y=last`, 3000);
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  if (!isActivityList(data.contributions)) {
+    return null;
+  }
+
+  return data.contributions;
+}
+
+async function fetchFromStaticBundle() {
+  const response = await fetch(STATIC_DATA_PATH);
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  if (!isActivityList(data.contributions)) {
+    return null;
+  }
+
+  return data.contributions;
+}
+
+export async function fetchGitHubContributions(username) {
+  const sources = [
+    fetchFromStaticBundle,
+    () => fetchFromDeno(username),
+    () => fetchFromVercel(username),
+    () => fetchFromLegacy(username)
+  ];
+
+  for (const source of sources) {
+    try {
+      const contributions = await source();
+      if (isActivityList(contributions)) {
+        return contributions;
+      }
+    } catch {
+      // Try the next source.
+    }
+  }
+
+  throw new Error(`Fetching GitHub contribution data for "${username}" failed.`);
 }

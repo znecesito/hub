@@ -51,12 +51,15 @@ export default function GitHubActivity() {
       </div>
 
       <div className="github-card">
+        {loading ? (
+          <p className="github-card__status">Loading GitHub activity...</p>
+        ) : null}
         {error ? (
           <p className="github-card__error">{error}</p>
-        ) : (
+        ) : null}
+        {!loading && !error && data.length > 0 ? (
           <ActivityCalendar
             data={data}
-            loading={loading}
             colorScheme="light"
             fontSize={13}
             showColorLegend={false}
@@ -72,7 +75,7 @@ export default function GitHubActivity() {
               }
             }}
           />
-        )}
+        ) : null}
         <p className="github-card__note">
           Showing the last year of public contribution activity.
         </p>
