@@ -19,6 +19,8 @@ jobs:
           node-version: 20
 
       - run: node scripts/fetch-github-contributions.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push if changed
         run: |

@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,12 +14,12 @@ const LEVEL_MAP = {
   FOURTH_QUARTILE: 4
 };
 
-async function fetchWithTimeout(url, timeoutMs = 10000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    return await fetch(url, { signal: controller.signal });
+    return await fetch(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timeout);
   }
@@ -26,6 +27,14 @@ async function fetchWithTimeout(url, timeoutMs = 10000) {
 
 function transformDenoContributions(weeks) {
   return weeks.flat().map((day) => ({
+    date: day.date,
+    count: day.contributionCount,
+    level: LEVEL_MAP[day.contributionLevel] ?? 0
+  }));
+}
+
+function transformGraphQlContributions(weeks) {
+  return weeks.flatMap((week) => week.contributionDays).map((day) => ({
     date: day.date,
     count: day.contributionCount,
     level: LEVEL_MAP[day.contributionLevel] ?? 0
@@ -59,11 +68,69 @@ function isActivityList(items) {
   );
 }
 
-async function fetchContributions(username) {
+function getGitHubToken() {
+  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
+  if (process.env.GH_TOKEN) return process.env.GH_TOKEN;
+
   try {
-    const denoResponse = await fetchWithTimeout(
-      `https://github-contributions-api.deno.dev/${username}.json`
-    );
+    return execSync("gh auth token", { encoding: "utf8" }).trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchFromGitHubApi(username) {
+  const token = getGitHubToken();
+  if (!token) return null;
+
+  const query = `
+    query ($login: String!) {
+      user(login: $login) {
+        contributionsCollection {
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
+                contributionLevel
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetchWithTimeout("https://api.github.com/graphql", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": "portfolio-hub-contributions-fetch"
+    },
+    body: JSON.stringify({ query, variables: { login: username } })
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub GraphQL API responded with ${response.status}`);
+  }
+
+  const payload = await response.json();
+  if (payload.errors?.length) {
+    throw new Error(`GitHub GraphQL API errors: ${payload.errors.map((e) => e.message).join("; ")}`);
+  }
+
+  const weeks = payload.data?.user?.contributionsCollection?.contributionCalendar?.weeks;
+  const contributions = transformGraphQlContributions(weeks ?? []);
+
+  if (!isActivityList(contributions)) return null;
+
+  return { source: "github-graphql", contributions };
+}
+
+async function fetchFromMirrors(username) {
+  try {
+    const denoResponse = await fetchWithTimeout(`https://github-contributions-api.deno.dev/${username}.json`);
     if (denoResponse.ok) {
       const denoData = await denoResponse.json();
       const contributions = transformDenoContributions(denoData.contributions);
@@ -76,9 +143,7 @@ async function fetchContributions(username) {
   }
 
   try {
-    const vercelResponse = await fetchWithTimeout(
-      `https://github-contributions.vercel.app/api/v1/${username}`
-    );
+    const vercelResponse = await fetchWithTimeout(`https://github-contributions.vercel.app/api/v1/${username}`);
     if (vercelResponse.ok) {
       const vercelData = await vercelResponse.json();
       const contributions = transformVercelContributions(vercelData.contributions);
@@ -93,6 +158,7 @@ async function fetchContributions(username) {
   try {
     const legacyResponse = await fetchWithTimeout(
       `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
+      {},
       5000
     );
     if (legacyResponse.ok) {
@@ -104,6 +170,21 @@ async function fetchContributions(username) {
   } catch {
     // No more sources to try.
   }
+
+  return null;
+}
+
+async function fetchContributions(username) {
+  try {
+    const fromApi = await fetchFromGitHubApi(username);
+    if (fromApi) return fromApi;
+    console.warn("No GitHub token available or GraphQL fetch failed; falling back to third-party mirrors.");
+  } catch (error) {
+    console.warn(`GitHub GraphQL fetch failed (${error.message}); falling back to third-party mirrors.`);
+  }
+
+  const fromMirror = await fetchFromMirrors(username);
+  if (fromMirror) return fromMirror;
 
   throw new Error(`Unable to fetch GitHub contributions for ${username}.`);
 }
