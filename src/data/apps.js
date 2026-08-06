@@ -22,5 +22,17 @@ export const APPS = [
     url: "https://unreciprocated.vercel.app",
     github: "https://github.com/znecesito/unreciprocated",
     accent: "#334155"
+  },
+  {
+    id: "job-application-agent",
+    name: "job-application-agent",
+    tagline: "Automated job search assistant",
+    description: "An agent that finds relevant job openings and drafts tailored applications for review.",
+    year: 2026,
+    technologies: ["Python", "Automation", "Local dashboard"],
+    thumbnail: null,
+    url: null,
+    github: null,
+    accent: "#4b5563"
   }
 ];

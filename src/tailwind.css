@@ -227,6 +227,10 @@
     @apply bg-ink text-white hover:bg-muted;
   }
 
+  .app-card__link--disabled {
+    @apply cursor-default bg-soft text-muted hover:bg-soft;
+  }
+
   .app-card__link--secondary {
     @apply border border-border bg-surface-elevated text-ink hover:border-border-strong hover:bg-soft;
   }
