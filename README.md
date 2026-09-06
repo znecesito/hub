@@ -61,4 +61,3 @@ If importing the parent `ai-test` workspace into Vercel:
 If `hub/` becomes its own GitHub repository, leave Root Directory empty because the Vite project files are at the repository root.
 
 No SPA rewrite is required for the current single-page hub. Add one later only if client-side routes are introduced.
-<!-- git connectivity test: 2026-09-05 -->
